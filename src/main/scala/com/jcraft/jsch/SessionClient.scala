@@ -44,7 +44,7 @@ class SessionClient(jsch:JSch) extends Session(jsch) with SessionTrait{
 	val c = Class.forName(getConfig("random"))
         random=c.newInstance().asInstanceOf[Random]
       }
-      catch{case e => throw new JSchException(e.toString(), e)}
+      catch{case e : Exception => throw new JSchException(e.toString(), e)}
     }
 
     Packet.setRandom(random)

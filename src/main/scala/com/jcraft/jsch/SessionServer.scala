@@ -61,7 +61,7 @@ class SessionServer(jsch:JSch, socket:Socket) extends Session(jsch)
 	val c = Class.forName(getConfig("random"))
         random = c.newInstance.asInstanceOf[Random]
       }
-      catch{case e => throw new JSchException(e.toString, e)}
+      catch{case e : Exception => throw new JSchException(e.toString, e)}
     }
     Packet.setRandom(random)
 
