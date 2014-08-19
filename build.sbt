@@ -8,5 +8,7 @@ version := "1.0"
 
 scalaVersion := "2.11.2"
 
+libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.11.2"
+
 // -- Must use mangled jar in ./lib -- libraryDependencies += "com.jcraft" % "jsch" % "0.1.51"
 
