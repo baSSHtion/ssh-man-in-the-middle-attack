@@ -1,13 +1,25 @@
 Man in the middle attack for SHH
 ======================================
 
-This program demonstrates man-in-the-middle attack with key manipulation for ssh. [JSch](http://www.jcraft.com/jsch/) will be used.
+This program demonstrates man-in-the-middle attack with key manipulation for ssh that intercepts the plaintext communication, and the password used for authentication.
 
-If this PoC is run it listens to a port on the local machine, and logically forwards the connection to an SSH server running on the network. It does so my termiating the SSH conection from the client, and establishing its own connection to the 'real' server:  `client -ssh connection #1-> PoC -ssh connection #2-> SSH server`.
+If this PoC is run, it listens to a port on the local machine, and logically forwards the connection to a SSH server running on the network. It does so my terminating the SSH connection from the client, and establishing its own connection to the 'real' server. This allows the PoC to read the communication in plain.
 
-This PoC pnly supports password authentication.
 
-The original implementation has been done by [ymnk](https://github.com/ymnk/man-in-the-middle-attack.git). I (Jens) just added this file, more logging, adn the `sbt` configuration.
+(Original implementation by [ymnk](https://github.com/ymnk/man-in-the-middle-attack.git))
+
+```text
+Connection 1:
+client --> PoC 
+
+Connection 2:
+PoC --> SSH server
+```
+
+SSH provides a native defense against this kind of attack: the servers host keys, and the `known_hosts` file. 
+
+The lesson to take away is: always verify the host key on first connect, and always be very suspicious, when the hostkey changes.
+
 
 Running
 ============
@@ -32,5 +44,8 @@ sbt "run  2222 127.0.0.1 3333"
 ssh 127.0.0.1 -p2222
 ```
 
-
-
+Misc
+======
+* This PoC only supports password authentication.
+* [JSch](http://www.jcraft.com/jsch/) is the SSH library used. 
+* The original implementation has been done by [ymnk](https://github.com/ymnk/man-in-the-middle-attack.git). I (Jens) just added this file, more logging, and the `sbt` configuration.
